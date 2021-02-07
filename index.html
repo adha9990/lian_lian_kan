@@ -53,7 +53,7 @@
       async function rectButtonEvent() {
         if(cache_bool) return;
         let _this = event.target;
-        if(cache_bool === _this) return; 
+        if(rect_cache == _this) return; 
         let index = _this.dataset.index;
         let value = _this.dataset.value;
         _this.innerHTML = value;

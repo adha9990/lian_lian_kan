@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>連連看</title>
+    <style>
+      .rect {
+        font-size: 50px;
+        width: 180px;
+        height: 200px;
+        margin: 5px;
+      }
+      .rect:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body onload="init();">
+    <div id="game-area"></div>
+    <script>
+      var data = [
+        ["1", "a"],
+        ["2", "b"],
+        ["3", "c"],
+        ["4", "d"],
+        ["5", "e"],
+        ["6", "f"],
+        ["7", "g"],
+      ];
+      var rect_cache = null;
+      function init() {
+        data.sort(() => Math.random() - 0.5);
+        let area = document.getElementById("game-area");
+        data.forEach((e, i, a) => {
+          e.forEach((ee, ii, aa) => {
+            area.append(createNewRectButton(i, ee));
+          });
+        });
+      }
+      function createNewRectButton(index, value) {
+        let btn = document.createElement("button");
+        btn.classList.add("rect");
+        btn.dataset.index = index;
+        btn.dataset.value = value;
+        btn.innerHTML = "　";
+        btn.addEventListener("click", () => rectButtonEvent());
+        return btn;
+      }
+      async function rectButtonEvent() {
+        let _this = event.target;
+        let index = _this.dataset.index;
+        let value = _this.dataset.value;
+        _this.innerHTML = value;
+        await sleep(1000);
+        if (rect_cache) {
+          if (check(rect_cache, _this)) {
+            _this.disabled = true;
+              rect_cache.disabled = true;
+          } else {
+            rect_cache.innerHTML = "　";
+            _this.innerHTML = "　";
+          }
+          rect_cache = null;
+        } else {
+          rect_cache = _this;
+        }
+      }
+      function check(a, b) {
+        let ai = a.dataset.index;
+        let bi = b.dataset.index;
+        return ai == bi;
+      }
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+    </script>
+  </body>
+</html>

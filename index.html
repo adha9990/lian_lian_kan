@@ -30,13 +30,12 @@
         ["7", "g"],
       ];
       var rect_cache = null;
+      var cache_bool = false;
       function init() {
-        data.sort(() => Math.random() - 0.5);
         let area = document.getElementById("game-area");
-        data.forEach((e, i, a) => {
-          e.forEach((ee, ii, aa) => {
-            area.append(createNewRectButton(i, ee));
-          });
+        area.innerHTML = "";
+        randomData().forEach((e) => {
+          area.append(createNewRectButton(e.index, e.value));
         });
       }
       function createNewRectButton(index, value) {
@@ -49,23 +48,39 @@
         return btn;
       }
       async function rectButtonEvent() {
+        if(cache_bool) return;
         let _this = event.target;
         let index = _this.dataset.index;
         let value = _this.dataset.value;
         _this.innerHTML = value;
-        await sleep(1000);
+        
         if (rect_cache) {
+          cache_bool = true;
+          await sleep(1000);
           if (check(rect_cache, _this)) {
             _this.disabled = true;
-              rect_cache.disabled = true;
+            rect_cache.disabled = true;
           } else {
             rect_cache.innerHTML = "　";
             _this.innerHTML = "　";
           }
           rect_cache = null;
+          cache_bool = false;
         } else {
           rect_cache = _this;
         }
+      }
+      function randomData() {
+        let ar = [].concat.apply([], data);
+        let d = [];
+        ar.forEach((e, i, a) => {
+          d.push({
+            index: Math.floor(i / 2),
+            value: e,
+          });
+        });
+        d.sort(() => Math.random() - 0.5);
+        return d;
       }
       function check(a, b) {
         let ai = a.dataset.index;
